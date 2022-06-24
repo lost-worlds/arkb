@@ -91,6 +91,7 @@ export default class Deploy {
     feeMultiplier?: number,
     forceRedeploy: boolean = false,
     colors: boolean = true,
+    orderedPaths: string[] = [],
   ) {
     this.txs = [];
 
@@ -219,7 +220,7 @@ export default class Deploy {
     }
 
     // Don't allow manifest build
-    if (!isFile) await this.buildManifest(dir, index, tags, useBundler, feeMultiplier);
+    if (!isFile) await this.buildManifest(dir, index, tags, useBundler, feeMultiplier, orderedPaths);
 
     if (this.logs) countdown.stop();
 
@@ -423,6 +424,7 @@ export default class Deploy {
     tags: Tags,
     useBundler: string,
     feeMultiplier: number,
+    orderedPaths: string[],
   ) {
     const { results: pDuplicates } = await PromisePool.for(this.duplicates)
       .withConcurrency(this.threads)
@@ -454,6 +456,13 @@ export default class Deploy {
       if (!Object.keys(paths).includes(index)) {
         index = Object.keys(paths)[0];
       }
+    }
+
+    if (orderedPaths) {
+      orderedPaths.forEach((orderedPath, indexOfPath) => {
+        if (!paths[orderedPath]) throw Error(`${orderedPath} does not exist as a valid path! ${JSON.stringify(paths)}`);
+        paths[indexOfPath] = paths[orderedPath];
+      });
     }
 
     const data = {
