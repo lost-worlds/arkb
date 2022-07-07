@@ -92,6 +92,7 @@ export default class Deploy {
     forceRedeploy: boolean = false,
     colors: boolean = true,
     orderedPaths: string[] = [],
+    mimeType: string = ""
   ) {
     this.txs = [];
 
@@ -155,7 +156,7 @@ export default class Deploy {
           }
         }
 
-        const type = mime.getType(filePath) || 'application/octet-stream';
+        const type = mime.getType(filePath) || mimeType || 'application/octet-stream';
         const newTags = new Tags();
         for (const tag of tags.tags) {
           newTags.addTag(tag.name, tag.value);
