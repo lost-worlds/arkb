@@ -89,7 +89,7 @@ export default class Deploy {
     forceRedeploy: boolean = false,
     colors: boolean = true,
     orderedPaths: string[] = [],
-    mimeType: string = ""
+    mimeType: string = '',
   ) {
     this.txs = [];
 
